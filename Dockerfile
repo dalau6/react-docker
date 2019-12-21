@@ -1,4 +1,4 @@
-# Pull base image
+# build environment
 FROM node
 
 LABEL "react-beta"="1.0"
@@ -11,9 +11,21 @@ COPY ./src /src
 # Set work directory
 WORKDIR /src
 
-EXPOSE 8080
+# add `/src/node_modules/.bin` to $PATH
+ENV PATH /src/node_modules/.bin:$PATH
+
+# EXPOSE 8080
 
 # Install dependencies
 RUN npm install
 
-CMD [ "npm", "start" ]
+RUN npm run build
+
+# production environment
+FROM nginx:1.17.6-alpine
+
+# COPY --from=0 /dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
