@@ -24,7 +24,11 @@ RUN npm run build
 # production environment
 FROM nginx:1.17.6-alpine
 
-# COPY --from=0 /dist /usr/share/nginx/html
+COPY --from=0 /dist /usr/share/nginx/html
+
+RUN rm /etc/nginx/conf.d/default.conf
+
+COPY nginx/nginx.conf /etc/nginx/conf.d
 
 EXPOSE 80
 
